@@ -34,6 +34,24 @@
                             @enderror
                         </div>
 
+                        <div class="mb-4">
+                            <label for="category_id" class="block font-medium text-sm text-gray-700">Category</label>
+                            <select name="category_id" id="category_id"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                required>
+                                <option value="" disabled selected>Select a Category</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <span class="text-red-500 text-xs">{{ $message }}</span>
+                            @enderror
+                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
                                 <label for="buy_price" class="block font-medium text-sm text-gray-700">Buy Price

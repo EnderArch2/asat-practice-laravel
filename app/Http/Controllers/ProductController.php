@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +14,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::paginate(10);
+        $products = Product::with('category')->paginate(10);
         return view('admin.products.index', compact('products'));
     }
 
@@ -22,7 +23,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('admin.products.create');
+        $categories = Category::all();
+        return view('admin.products.create', compact('categories'));
     }
 
     /**
@@ -33,6 +35,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'sku' => 'required|string|unique:products,sku|max:255',
             'name' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
             'buy_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
             'stock' => 'required|numeric|min:0',
@@ -62,7 +65,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        return view('admin.products.edit', compact('product'));
+        $categories = Category::all();
+        return view('admin.products.edit', compact('product', 'categories'));
     }
 
     /**
@@ -73,6 +77,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'sku' => 'required|string|max:255|unique:products,sku,' . $product->id,
             'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
             'buy_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
